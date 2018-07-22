@@ -553,6 +553,7 @@ function drawQueryTree(target, treeData) {
     // Define the zoomListener which calls the zoom function on the "zoom" event constrained within the scaleExtents
     var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 5]).on("zoom", zoom);
 
+
     // Define the baseSvg, attaching a class for styling and the zoomListener
     var baseSvg = d3.select(target).append("svg")
         .attr("viewBox", "0 0 " + viewerWidth + " " + viewerHeight)
@@ -561,6 +562,30 @@ function drawQueryTree(target, treeData) {
         .call(zoomListener);
 
     defineSymbols(baseSvg, ooo);
+
+    var filterDef = baseSvg.append("filter")
+        .attr("id", "highlighted-filter")
+        .attr("height", "200%")
+        .attr("width", "200%");
+
+    filterDef.node().innerHTML =
+        '<feGaussianBlur in="SourceAlpha" stdDeviation="2"/>' +
+        '<feColorMatrix type="matrix" ' +
+        'values="' +
+           '0  0  0 .95  0 ' +
+           '0  0  0 .76  0 ' +
+           '0  0  0 .25  0 ' +
+           '0  0  0 .90  0 ' +
+        '"/>' +
+        '<feOffset dx="2" dy="2" result="offsetblur"/>' +
+        '<feMerge>' +
+          '<feMergeNode/>' +
+          '<feMergeNode in="SourceGraphic"/>' +
+        '</feMerge>';
+
+        // '<feComponentTransfer>' +
+        //      '<feFuncA type="linear" slope="0.5"/>' +
+        // '</feComponentTransfer>' +
 
     // Return true if node is collapsed
     function collapsed(d) {
@@ -592,6 +617,14 @@ function drawQueryTree(target, treeData) {
         update(d);
     }
 
+    function mouseEnter(d) {
+        d3.select(this).attr("filter", "url('#highlighted-filter')")
+    }
+
+    function mouseLeave(d) {
+        d3.select(this).attr("filter", null)
+    }
+
     //
     // Update graph at the given source location, which may be the root or a subtree
     //
@@ -617,6 +650,8 @@ function drawQueryTree(target, treeData) {
             .attr("transform", function(_d) {
                 return "translate(" + source.x0 + "," + source.y0 + ")";
             })
+            .on('mouseenter', mouseEnter)
+            .on('mouseleave', mouseLeave)
             .on('click', click);
 
         nodeEnter.append("use")

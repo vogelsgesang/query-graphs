@@ -139,6 +139,10 @@ html, body {
   fill: currentColor;
 }
 
+/*
+ Nodes
+ */
+
 .node text {
   font-size: 9px;
   font-weight: bold;
@@ -168,6 +172,10 @@ html, body {
 .prop-value {
   color: black;
 }
+
+/*
+ Links
+ */
 
 .link {
   fill: none;
