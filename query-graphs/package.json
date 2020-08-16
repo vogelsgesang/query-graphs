@@ -47,16 +47,14 @@
     "xml2js": "^0.4.16"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.11",
-    "@types/mocha": "^7.0.2",
-    "chai": "^4.2.0",
-    "mocha": "^8.0.1",
-    "ts-node": "^8.10.2",
-    "typescript": "^3.8.3"
+    "@types/jest": "^26.0.10",
+    "jest": "^26.4.0",
+    "ts-jest": "^26.2.0",
+    "typescript": "^3.9.5"
   },
   "scripts": {
     "build": "tsc --build",
-    "test": "env TS_NODE_PROJECT=\"tsconfig.testing.json\" mocha -r ts-node/register --recursive src/**/*.test.ts",
+    "test": "jest",
     "lint": "eslint .",
     "typescript": "^3.8.3"
   },

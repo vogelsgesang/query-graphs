@@ -2,8 +2,6 @@
 // tql.test.js
 // -----------------------------------------------------------------------------
 
-import "mocha";
-import {expect} from "chai";
 import * as TQL from "./tql";
 
 ///////////////////////////////////////////////////////////////////////////
@@ -45,7 +43,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse aggregate", function() {
@@ -100,7 +98,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse cartprod", function() {
@@ -145,7 +143,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse database", function() {
@@ -166,7 +164,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse dict", function() {
@@ -194,7 +192,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse exchange", function() {
@@ -224,7 +222,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse flowtable", function() {
@@ -251,7 +249,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse fraction", function() {
@@ -284,7 +282,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse groupjoin", function() {
@@ -361,7 +359,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse iejoin", function() {
@@ -432,7 +430,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse indextable", function() {
@@ -460,7 +458,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse indexjoin", function() {
@@ -532,7 +530,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse iterate", function() {
@@ -569,7 +567,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse join", function() {
@@ -631,7 +629,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse order", function() {
@@ -667,7 +665,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse partition-restart", function() {
@@ -692,7 +690,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse partition-split", function() {
@@ -719,7 +717,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse pivot", function() {
@@ -806,7 +804,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse positionaljoin", function() {
@@ -841,7 +839,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse project", function() {
@@ -884,7 +882,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse radix-sort", function() {
@@ -920,7 +918,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse restrict", function() {
@@ -953,7 +951,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse scan", function() {
@@ -986,7 +984,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse select", function() {
@@ -1025,7 +1023,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse shared", function() {
@@ -1052,7 +1050,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse table", function() {
@@ -1070,7 +1068,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse text", function() {
@@ -1109,7 +1107,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse top", function() {
@@ -1147,7 +1145,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse update", function() {
@@ -1184,7 +1182,7 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 
     it("should parse window", function() {
@@ -1236,6 +1234,6 @@ describe("TQL parsing", function() {
         ];
 
         const actual = TQL.parse(setup);
-        expect(actual).to.deep.equal(expected);
+        expect(actual).toEqual(expected);
     });
 });
