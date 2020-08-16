@@ -19,31 +19,30 @@ describe("TQL parsing", function() {
             "; comment at the end\n",
         ].join("\n");
 
-        const expected = [
-            {
-                name: "database",
-                class: "command",
-                children: [
-                    {
-                        name: "BlackBox/Window",
-                        class: "string",
-                    },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "class": "string",
+                    "name": "BlackBox/Window",
+                  },
                 ],
-                properties: {},
-            },
-            {
-                name: "[catalog_sales]",
-                class: "table",
-                children: [],
-                properties: {
-                    schema: "[tpcds]",
-                    table: "[catalog_sales]",
+                "class": "command",
+                "name": "database",
+                "properties": Object {},
+              },
+              Object {
+                "children": Array [],
+                "class": "table",
+                "name": "[catalog_sales]",
+                "properties": Object {
+                  "schema": "[tpcds]",
+                  "table": "[catalog_sales]",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse aggregate", function() {
@@ -53,52 +52,62 @@ describe("TQL parsing", function() {
             "  ( [cs_ship_date_sk] [cs_sold_date_sk] ) " +
             "  ( ( [count] (total [count] ) ) ) )";
 
-        const expected = [
-            {
-                name: "aggregate",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "groupbys",
-                        class: "fields",
-                        children: [
-                            {name: "[cs_ship_date_sk]", class: "field"},
-                            {name: "[cs_sold_date_sk]", class: "field"},
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "field",
+                        "name": "[cs_ship_date_sk]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[cs_sold_date_sk]",
+                      },
+                    ],
+                    "class": "fields",
+                    "name": "groupbys",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "children": Array [
+                              Object {
+                                "class": "field",
+                                "name": "[count]",
+                              },
+                            ],
+                            "class": "function",
+                            "name": "total",
+                          },
                         ],
-                    },
-                    {
-                        name: "measures",
-                        class: "bindings",
-                        children: [
-                            {
-                                name: "[count]",
-                                class: "binding",
-                                children: [
-                                    {
-                                        class: "function",
-                                        name: "total",
-                                        children: [{class: "field", name: "[count]"}],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
+                        "class": "binding",
+                        "name": "[count]",
+                      },
+                    ],
+                    "class": "bindings",
+                    "name": "measures",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "aggregate",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse cartprod", function() {
@@ -109,180 +118,178 @@ describe("TQL parsing", function() {
             "  ( ([d_date_sk] [d_date_sk]) ) " +
             "  ) ";
 
-        const expected = [
-            {
-                name: "cartprod",
-                class: "join",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "imports",
-                        class: "renames",
-                        children: [{name: "[d_date_sk]", class: "rename", source: "[d_date_sk]"}],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "rename",
+                        "name": "[d_date_sk]",
+                        "source": "[d_date_sk]",
+                      },
+                    ],
+                    "class": "renames",
+                    "name": "imports",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "join",
+                "name": "cartprod",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse database", function() {
         const setup = '(database "BlackBox/Window")';
-
-        const expected = [
-            {
-                name: "database",
-                class: "command",
-                children: [
-                    {
-                        name: "BlackBox/Window",
-                        class: "string",
-                    },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "class": "string",
+                    "name": "BlackBox/Window",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "command",
+                "name": "database",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse dict", function() {
         const setup = "(dict [d_date_sk] (table [tpcds].[date_dim]) )";
-
-        const expected = [
-            {
-                name: "dict",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
+                  },
                 ],
-                properties: {
-                    name: "[d_date_sk]",
+                "class": "reference",
+                "name": "dict",
+                "properties": Object {
+                  "name": "[d_date_sk]",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse exchange", function() {
         const setup = "(exchange (table [tpcds].[catalog_sales]) 4 [] false )";
-        const expected = [
-            {
-                name: "exchange",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
+                  },
                 ],
-                properties: {
-                    concurrency: 4,
-                    ordered: false,
-                    affinity: "[]",
-                    thread: 0,
+                "class": "reference",
+                "name": "exchange",
+                "properties": Object {
+                  "affinity": "[]",
+                  "concurrency": 4,
+                  "ordered": false,
+                  "thread": 0,
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse flowtable", function() {
         const setup = "(flowtable (table [tpcds].[catalog_sales]) none )";
-        const expected = [
-            {
-                name: "flowtable",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
+                  },
                 ],
-                properties: {
-                    encodings: "none",
+                "class": "reference",
+                "name": "flowtable",
+                "properties": Object {
+                  "encodings": "none",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse fraction", function() {
         const setup = "(fraction (table [tpcds].[catalog_sales]) 4 0 () )";
-        const expected = [
-            {
-                name: "fraction",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "clustering",
-                        class: "fields",
-                        children: [],
-                    },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "fields",
+                    "name": "clustering",
+                  },
                 ],
-                properties: {
-                    concurrency: 4,
-                    thread: 0,
+                "class": "reference",
+                "name": "fraction",
+                "properties": Object {
+                  "concurrency": 4,
+                  "thread": 0,
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse groupjoin", function() {
@@ -294,72 +301,88 @@ describe("TQL parsing", function() {
             "  ( ( [sum] [sum] ) ) " +
             "  ( ( [sum] (total [d_date_sk] ) ) ) )";
 
-        const expected = [
-            {
-                name: "groupjoin",
-                class: "join",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "conditions",
-                        class: "expressions",
-                        children: [
-                            {
-                                class: "function",
-                                name: "isnotdistinct",
-                                children: [
-                                    {name: "[d_date_sk]", class: "field"},
-                                    {name: "[cs_ship_date_sk]", class: "field"},
-                                ],
-                            },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[d_date_sk]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[cs_ship_date_sk]",
+                          },
                         ],
-                    },
-                    {
-                        name: "imports",
-                        class: "renames",
-                        children: [{name: "[sum]", class: "rename", source: "[sum]"}],
-                    },
-                    {
-                        name: "measures",
-                        class: "bindings",
-                        children: [
-                            {
-                                name: "[sum]",
-                                class: "binding",
-                                children: [
-                                    {
-                                        class: "function",
-                                        name: "total",
-                                        children: [{class: "field", name: "[d_date_sk]"}],
-                                    },
-                                ],
-                            },
+                        "class": "function",
+                        "name": "isnotdistinct",
+                      },
+                    ],
+                    "class": "expressions",
+                    "name": "conditions",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "rename",
+                        "name": "[sum]",
+                        "source": "[sum]",
+                      },
+                    ],
+                    "class": "renames",
+                    "name": "imports",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "children": Array [
+                              Object {
+                                "class": "field",
+                                "name": "[d_date_sk]",
+                              },
+                            ],
+                            "class": "function",
+                            "name": "total",
+                          },
                         ],
-                    },
+                        "class": "binding",
+                        "name": "[sum]",
+                      },
+                    ],
+                    "class": "bindings",
+                    "name": "measures",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "join",
+                "name": "groupjoin",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse iejoin", function() {
@@ -371,94 +394,109 @@ describe("TQL parsing", function() {
             "  ( ([d_date_sk] [d_date_sk]) ) " +
             "  inner 4 ) ";
 
-        const expected = [
-            {
-                name: "iejoin",
-                class: "join",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "conditions",
-                        class: "expressions",
-                        children: [
-                            {
-                                class: "function",
-                                name: "<=",
-                                children: [
-                                    {class: "field", name: "[cs_sold_date_sk]"},
-                                    {class: "field", name: "[d_date_sk]"},
-                                ],
-                            },
-                            {
-                                class: "function",
-                                name: ">=",
-                                children: [
-                                    {class: "field", name: "[cs_ship_date_sk]"},
-                                    {class: "field", name: "[d_date_sk]"},
-                                ],
-                            },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[cs_sold_date_sk]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[d_date_sk]",
+                          },
                         ],
-                    },
-                    {
-                        name: "imports",
-                        class: "renames",
-                        children: [{name: "[d_date_sk]", class: "rename", source: "[d_date_sk]"}],
-                    },
+                        "class": "function",
+                        "name": "<=",
+                      },
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[cs_ship_date_sk]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[d_date_sk]",
+                          },
+                        ],
+                        "class": "function",
+                        "name": ">=",
+                      },
+                    ],
+                    "class": "expressions",
+                    "name": "conditions",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "rename",
+                        "name": "[d_date_sk]",
+                        "source": "[d_date_sk]",
+                      },
+                    ],
+                    "class": "renames",
+                    "name": "imports",
+                  },
                 ],
-                properties: {
-                    join: "inner",
-                    concurrency: 4,
+                "class": "join",
+                "name": "iejoin",
+                "properties": Object {
+                  "concurrency": 4,
+                  "join": "inner",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse indextable", function() {
         const setup = "(indextable [d_date_sk] (table [tpcds].[date_dim]) )";
-
-        const expected = [
-            {
-                name: "indextable",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
+                  },
                 ],
-                properties: {
-                    name: "[d_date_sk]",
+                "class": "reference",
+                "name": "indextable",
+                "properties": Object {
+                  "name": "[d_date_sk]",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse indexjoin", function() {
@@ -470,104 +508,111 @@ describe("TQL parsing", function() {
             "  ( ([cs_sold_date_sk] [cs_sold_date_sk]) ) " +
             "  ( [.RANK] [.COUNT]) ) ";
 
-        const expected = [
-            {
-                name: "indexjoin",
-                class: "join",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
+                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [],
+                        "class": "table",
+                        "name": "[catalog_sales]",
+                        "properties": Object {
+                          "schema": "[tpcds]",
+                          "table": "[catalog_sales]",
                         },
+                      },
+                    ],
+                    "class": "reference",
+                    "name": "indextable",
+                    "properties": Object {
+                      "name": "[cs_sold_date_sk]",
                     },
-                    {
-                        name: "indextable",
-                        class: "reference",
-                        children: [
-                            {
-                                name: "[catalog_sales]",
-                                class: "table",
-                                children: [],
-                                properties: {
-                                    schema: "[tpcds]",
-                                    table: "[catalog_sales]",
-                                },
-                            },
-                        ],
-                        properties: {
-                            name: "[cs_sold_date_sk]",
-                        },
-                    },
-                    {
-                        name: "restrictions",
-                        class: "fields",
-                        children: [
-                            {class: "field", name: "[cs_ship_date_sk]"},
-                            {class: "field", name: "[cs_sold_date_sk]"},
-                        ],
-                    },
-                    {
-                        name: "imports",
-                        class: "renames",
-                        children: [
-                            {
-                                name: "[cs_sold_date_sk]",
-                                class: "rename",
-                                source: "[cs_sold_date_sk]",
-                            },
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "field",
+                        "name": "[cs_ship_date_sk]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[cs_sold_date_sk]",
+                      },
+                    ],
+                    "class": "fields",
+                    "name": "restrictions",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "rename",
+                        "name": "[cs_sold_date_sk]",
+                        "source": "[cs_sold_date_sk]",
+                      },
+                    ],
+                    "class": "renames",
+                    "name": "imports",
+                  },
                 ],
-                properties: {
-                    index: {name: "[.COUNT]", source: "[.RANK]", class: "rename"},
-                    join: "inner",
+                "class": "join",
+                "name": "indexjoin",
+                "properties": Object {
+                  "index": Object {
+                    "class": "rename",
+                    "name": "[.COUNT]",
+                    "source": "[.RANK]",
+                  },
+                  "join": "inner",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse iterate", function() {
         const setup = "(iterate " + "  (table [tpcds].[catalog_sales]) " + "  (table [tpcds].[date_dim]) " + "  [Iterate] ) ";
-
-        const expected = [
-            {
-                name: "iterate",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
+                  },
                 ],
-                properties: {
-                    name: "[Iterate]",
+                "class": "reference",
+                "name": "iterate",
+                "properties": Object {
+                  "name": "[Iterate]",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse join", function() {
@@ -579,145 +624,153 @@ describe("TQL parsing", function() {
             "  ( ([d_date_sk] [d_date_sk]) ) " +
             "  left ) ";
 
-        const expected = [
-            {
-                name: "join",
-                class: "join",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "conditions",
-                        class: "expressions",
-                        children: [
-                            {
-                                class: "function",
-                                name: "=",
-                                children: [
-                                    {class: "field", name: "[d_date_sk]"},
-                                    {class: "field", name: "[cs_sold_date_sk]"},
-                                ],
-                            },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[d_date_sk]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[cs_sold_date_sk]",
+                          },
                         ],
-                    },
-                    {
-                        name: "imports",
-                        class: "renames",
-                        children: [{name: "[d_date_sk]", class: "rename", source: "[d_date_sk]"}],
-                    },
+                        "class": "function",
+                        "name": "=",
+                      },
+                    ],
+                    "class": "expressions",
+                    "name": "conditions",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "rename",
+                        "name": "[d_date_sk]",
+                        "source": "[d_date_sk]",
+                      },
+                    ],
+                    "class": "renames",
+                    "name": "imports",
+                  },
                 ],
-                properties: {
-                    join: "left",
+                "class": "join",
+                "name": "join",
+                "properties": Object {
+                  "join": "left",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse order", function() {
         const setup = "(order (table [tpcds].[date_dim]) ( ( [d_date_sk] asc ) ) )";
-        const expected = [
-            {
-                name: "order",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "orderbys",
-                        class: "orderbys",
-                        children: [
-                            {
-                                name: "[d_date_sk]",
-                                class: "orderby",
-                                sense: "asc",
-                            },
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "orderby",
+                        "name": "[d_date_sk]",
+                        "sense": "asc",
+                      },
+                    ],
+                    "class": "orderbys",
+                    "name": "orderbys",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "order",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse partition-restart", function() {
         const setup = "(partition-restart (table [tpcds].[date_dim]) )";
-        const expected = [
-            {
-                name: "partition-restart",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "partition-restart",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse partition-split", function() {
         const setup = "(partition-split [d_date_sk] (table [tpcds].[date_dim]) )";
-        const expected = [
-            {
-                name: "partition-split",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
+                  },
                 ],
-                properties: {
-                    name: "[d_date_sk]",
+                "class": "reference",
+                "name": "partition-split",
+                "properties": Object {
+                  "name": "[d_date_sk]",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse pivot", function() {
@@ -728,347 +781,422 @@ describe("TQL parsing", function() {
             "   ( [int]  ( [int0]  [int1]  [int2]  [int3]  ) ) " +
             "   ( [num]  ( [num0]  [num1]  [num2]  [num3]  ) ) " +
             "   ( [str]  ( [str0]  [str1]  [str2]  [str3]  ) ) ) )";
-        const expected = [
-            {
-                name: "pivot",
-                class: "reference",
-                children: [
-                    {
-                        name: "[Calcs]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[TestV1]",
-                            table: "[Calcs]",
-                        },
-                    },
-                    {
-                        name: "[index]",
-                        class: "fields",
-                        children: [
-                            {name: "[0]", class: "field"},
-                            {name: "[1]", class: "field"},
-                            {name: "[2]", class: "field"},
-                            {name: "[3]", class: "field"},
-                        ],
-                    },
-                    {
-                        name: "groups",
-                        class: "groups",
-                        children: [
-                            {
-                                name: "[bool]",
-                                class: "fields",
-                                children: [
-                                    {name: "[bool0]", class: "field"},
-                                    {name: "[bool1]", class: "field"},
-                                    {name: "[bool2]", class: "field"},
-                                    {name: "[bool3]", class: "field"},
-                                ],
-                            },
-                            {
-                                name: "[int]",
-                                class: "fields",
-                                children: [
-                                    {name: "[int0]", class: "field"},
-                                    {name: "[int1]", class: "field"},
-                                    {name: "[int2]", class: "field"},
-                                    {name: "[int3]", class: "field"},
-                                ],
-                            },
-                            {
-                                name: "[num]",
-                                class: "fields",
-                                children: [
-                                    {name: "[num0]", class: "field"},
-                                    {name: "[num1]", class: "field"},
-                                    {name: "[num2]", class: "field"},
-                                    {name: "[num3]", class: "field"},
-                                ],
-                            },
-                            {
-                                name: "[str]",
-                                class: "fields",
-                                children: [
-                                    {name: "[str0]", class: "field"},
-                                    {name: "[str1]", class: "field"},
-                                    {name: "[str2]", class: "field"},
-                                    {name: "[str3]", class: "field"},
-                                ],
-                            },
-                        ],
-                    },
-                ],
-                properties: {},
-            },
-        ];
 
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[Calcs]",
+                    "properties": Object {
+                      "schema": "[TestV1]",
+                      "table": "[Calcs]",
+                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "field",
+                        "name": "[0]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[1]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[2]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[3]",
+                      },
+                    ],
+                    "class": "fields",
+                    "name": "[index]",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[bool0]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[bool1]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[bool2]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[bool3]",
+                          },
+                        ],
+                        "class": "fields",
+                        "name": "[bool]",
+                      },
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[int0]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[int1]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[int2]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[int3]",
+                          },
+                        ],
+                        "class": "fields",
+                        "name": "[int]",
+                      },
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[num0]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[num1]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[num2]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[num3]",
+                          },
+                        ],
+                        "class": "fields",
+                        "name": "[num]",
+                      },
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[str0]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[str1]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[str2]",
+                          },
+                          Object {
+                            "class": "field",
+                            "name": "[str3]",
+                          },
+                        ],
+                        "class": "fields",
+                        "name": "[str]",
+                      },
+                    ],
+                    "class": "groups",
+                    "name": "groups",
+                  },
+                ],
+                "class": "reference",
+                "name": "pivot",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse positionaljoin", function() {
         const setup = "(positionaljoin " + "  (table [tpcds].[catalog_sales]) " + "  (table [tpcds].[date_dim]) )";
-
-        const expected = [
-            {
-                name: "positionaljoin",
-                class: "join",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+                  },
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
+                  },
                 ],
-                properties: {join: "inner"},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "join",
+                "name": "positionaljoin",
+                "properties": Object {
+                  "join": "inner",
+                },
+              },
+            ]
+        `);
     });
 
     it("should parse project", function() {
         const setup = "(project " + "  (table [tpcds].[catalog_sales]) " + "  ( ( [count] (abs [count] ) ) ) )";
-
-        const expected = [
-            {
-                name: "project",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "expressions",
-                        class: "bindings",
-                        children: [
-                            {
-                                name: "[count]",
-                                class: "binding",
-                                children: [
-                                    {
-                                        name: "abs",
-                                        class: "function",
-                                        children: [{class: "field", name: "[count]"}],
-                                    },
-                                ],
-                            },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "children": Array [
+                              Object {
+                                "class": "field",
+                                "name": "[count]",
+                              },
+                            ],
+                            "class": "function",
+                            "name": "abs",
+                          },
                         ],
-                    },
+                        "class": "binding",
+                        "name": "[count]",
+                      },
+                    ],
+                    "class": "bindings",
+                    "name": "expressions",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "project",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse radix-sort", function() {
         const setup = "(radix-sort (table [tpcds].[date_dim]) ( ( [d_date_sk] asc ) ) )";
-        const expected = [
-            {
-                name: "radix-sort",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "orderbys",
-                        class: "orderbys",
-                        children: [
-                            {
-                                name: "[d_date_sk]",
-                                class: "orderby",
-                                sense: "asc",
-                            },
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "orderby",
+                        "name": "[d_date_sk]",
+                        "sense": "asc",
+                      },
+                    ],
+                    "class": "orderbys",
+                    "name": "orderbys",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "radix-sort",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse restrict", function() {
         const setup = "(restrict (table [tpcds].[catalog_sales]) ( [cs_ship_date_sk] [cs_sold_date_sk] ) )";
-        const expected = [
-            {
-                name: "restrict",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "restrictions",
-                        class: "fields",
-                        children: [
-                            {name: "[cs_ship_date_sk]", class: "field"},
-                            {name: "[cs_sold_date_sk]", class: "field"},
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "field",
+                        "name": "[cs_ship_date_sk]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[cs_sold_date_sk]",
+                      },
+                    ],
+                    "class": "fields",
+                    "name": "restrictions",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "restrict",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse scan", function() {
         const setup = "(scan (table [tpcds].[catalog_sales]) ( [cs_ship_date_sk] [cs_sold_date_sk] ) )";
-        const expected = [
-            {
-                name: "scan",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "restrictions",
-                        class: "fields",
-                        children: [
-                            {name: "[cs_ship_date_sk]", class: "field"},
-                            {name: "[cs_sold_date_sk]", class: "field"},
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "field",
+                        "name": "[cs_ship_date_sk]",
+                      },
+                      Object {
+                        "class": "field",
+                        "name": "[cs_sold_date_sk]",
+                      },
+                    ],
+                    "class": "fields",
+                    "name": "restrictions",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "scan",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse select", function() {
         const setup = "(select (table [tpcds].[date_dim]) (>= [d_date_sk] 2450815 ) )";
-        const expected = [
-            {
-                name: "select",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "predicate",
-                        class: "expressions",
-                        children: [
-                            {
-                                name: ">=",
-                                class: "function",
-                                children: [
-                                    {name: "[d_date_sk]", class: "field"},
-                                    {name: "2450815", class: "integer"},
-                                ],
-                            },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "class": "field",
+                            "name": "[d_date_sk]",
+                          },
+                          Object {
+                            "class": "integer",
+                            "name": "2450815",
+                          },
                         ],
-                    },
+                        "class": "function",
+                        "name": ">=",
+                      },
+                    ],
+                    "class": "expressions",
+                    "name": "predicate",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "select",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse shared", function() {
         const setup = '(shared (table [tpcds].[catalog_sales]) "0")';
-        const expected = [
-            {
-                name: "shared",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
+                  },
                 ],
-                properties: {
-                    reference: 0,
+                "class": "reference",
+                "name": "shared",
+                "properties": Object {
+                  "reference": 0,
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse table", function() {
         const setup = "(table [tpcds].[catalog_sales])";
-        const expected = [
-            {
-                name: "[catalog_sales]",
-                class: "table",
-                children: [],
-                properties: {
-                    schema: "[tpcds]",
-                    table: "[catalog_sales]",
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [],
+                "class": "table",
+                "name": "[catalog_sales]",
+                "properties": Object {
+                  "schema": "[tpcds]",
+                  "table": "[catalog_sales]",
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse text", function() {
@@ -1077,112 +1205,115 @@ describe("TQL parsing", function() {
             '  ( ( "name" "cs_sold_date_sk" ) ( "factory" "builtin" ) ("builtin" "long" ) ) ' +
             '  ( ( "name" "cs_ship_date_sk" ) ( "factory" "builtin" ) ("builtin" "long" ) ) ) ' +
             '  ( ( "field-separator" "|" ) ( "header-row" "false" ) ) )';
-        const expected = [
-            {
-                name: "DebugBlackBox/tpcds/cs_date_sk.csv",
-                class: "table",
-                children: [
-                    {
-                        name: "schema",
-                        class: "schema",
-                        children: [
-                            {
-                                name: "[cs_sold_date_sk]",
-                                class: "properties",
-                                properties: {factory: "builtin", builtin: "long"},
-                            },
-                            {
-                                name: "[cs_ship_date_sk]",
-                                class: "properties",
-                                properties: {factory: "builtin", builtin: "long"},
-                            },
-                        ],
-                    },
-                ],
-                properties: {
-                    "field-separator": "|",
-                    "header-row": "false",
-                },
-            },
-        ];
 
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "properties",
+                        "name": "[cs_sold_date_sk]",
+                        "properties": Object {
+                          "builtin": "long",
+                          "factory": "builtin",
+                        },
+                      },
+                      Object {
+                        "class": "properties",
+                        "name": "[cs_ship_date_sk]",
+                        "properties": Object {
+                          "builtin": "long",
+                          "factory": "builtin",
+                        },
+                      },
+                    ],
+                    "class": "schema",
+                    "name": "schema",
+                  },
+                ],
+                "class": "table",
+                "name": "DebugBlackBox/tpcds/cs_date_sk.csv",
+                "properties": Object {
+                  "field-separator": "|",
+                  "header-row": "false",
+                },
+              },
+            ]
+        `);
     });
 
     it("should parse top", function() {
         const setup = "(top (table [tpcds].[date_dim]) ( ( [d_date_sk] asc ) ) 10 )";
-        const expected = [
-            {
-                name: "top",
-                class: "reference",
-                children: [
-                    {
-                        name: "[date_dim]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[date_dim]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[date_dim]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[date_dim]",
                     },
-                    {
-                        name: "orderbys",
-                        class: "orderbys",
-                        children: [
-                            {
-                                name: "[d_date_sk]",
-                                class: "orderby",
-                                sense: "asc",
-                            },
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "orderby",
+                        "name": "[d_date_sk]",
+                        "sense": "asc",
+                      },
+                    ],
+                    "class": "orderbys",
+                    "name": "orderbys",
+                  },
                 ],
-                properties: {
-                    top: 10,
+                "class": "reference",
+                "name": "top",
+                "properties": Object {
+                  "top": 10,
                 },
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+              },
+            ]
+        `);
     });
 
     it("should parse update", function() {
         const setup = "(update " + "  (table [tpcds].[catalog_sales]) " + "  ( ([cs_ship_date_sk] [cs_sold_date_sk]) ) " + "  ) ";
-
-        const expected = [
-            {
-                name: "update",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "updates",
-                        class: "renames",
-                        children: [
-                            {
-                                name: "[cs_sold_date_sk]",
-                                class: "rename",
-                                source: "[cs_ship_date_sk]",
-                            },
-                        ],
-                    },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "rename",
+                        "name": "[cs_sold_date_sk]",
+                        "source": "[cs_ship_date_sk]",
+                      },
+                    ],
+                    "class": "renames",
+                    "name": "updates",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "update",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 
     it("should parse window", function() {
@@ -1193,47 +1324,63 @@ describe("TQL parsing", function() {
             "  ( ( [cs_sold_date_sk] asc ) ) " +
             "  ( ([Length] (rowno) ) ) ) ";
 
-        const expected = [
-            {
-                name: "window",
-                class: "reference",
-                children: [
-                    {
-                        name: "[catalog_sales]",
-                        class: "table",
-                        children: [],
-                        properties: {
-                            schema: "[tpcds]",
-                            table: "[catalog_sales]",
-                        },
+        expect(TQL.parse(setup)).toMatchInlineSnapshot(`
+            Array [
+              Object {
+                "children": Array [
+                  Object {
+                    "children": Array [],
+                    "class": "table",
+                    "name": "[catalog_sales]",
+                    "properties": Object {
+                      "schema": "[tpcds]",
+                      "table": "[catalog_sales]",
                     },
-                    {
-                        name: "partitionbys",
-                        class: "fields",
-                        children: [{name: "[cs_ship_date_sk]", class: "field"}],
-                    },
-                    {
-                        name: "orderbys",
-                        class: "orderbys",
-                        children: [{name: "[cs_sold_date_sk]", class: "orderby", sense: "asc"}],
-                    },
-                    {
-                        name: "expressions",
-                        class: "bindings",
-                        children: [
-                            {
-                                name: "[Length]",
-                                class: "binding",
-                                children: [{class: "function", name: "rowno", children: []}],
-                            },
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "field",
+                        "name": "[cs_ship_date_sk]",
+                      },
+                    ],
+                    "class": "fields",
+                    "name": "partitionbys",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "class": "orderby",
+                        "name": "[cs_sold_date_sk]",
+                        "sense": "asc",
+                      },
+                    ],
+                    "class": "orderbys",
+                    "name": "orderbys",
+                  },
+                  Object {
+                    "children": Array [
+                      Object {
+                        "children": Array [
+                          Object {
+                            "children": Array [],
+                            "class": "function",
+                            "name": "rowno",
+                          },
                         ],
-                    },
+                        "class": "binding",
+                        "name": "[Length]",
+                      },
+                    ],
+                    "class": "bindings",
+                    "name": "expressions",
+                  },
                 ],
-                properties: {},
-            },
-        ];
-
-        const actual = TQL.parse(setup);
-        expect(actual).toEqual(expected);
+                "class": "reference",
+                "name": "window",
+                "properties": Object {},
+              },
+            ]
+        `);
     });
 });
