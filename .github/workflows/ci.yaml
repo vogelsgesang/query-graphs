@@ -28,6 +28,9 @@ jobs:
       - name: Build query-graphs
         run: yarn run --cwd=query-graphs build
 
+      - name: Test query-graphs
+        run: yarn run --cwd=query-graphs test
+
       - name: Build jupyterlab-extension
         run: yarn run --cwd=jupyterlab-extension build
 

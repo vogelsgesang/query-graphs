@@ -3,7 +3,11 @@
     "extends": "../tsconfigbase",
     "compilerOptions": {
       "rootDir": "src",
-      "module": "CommonJS"
+      "module": "CommonJS",
+      "noImplicitAny": false, // TODO: change
+      "noImplicitReturns": false,  // TODO: change
+      "noImplicitThis": false, // TODO: change
+      "strict": false // TODO: change
     },
     "include": ["src/**/*"]
 }
