@@ -213,6 +213,15 @@ marker#arrow {
   stroke: none;
 }
 
+.qg-symbol-text {
+  text-anchor: middle;
+  font-size: 10px;
+  font-weight: bold;
+  font-family: Monaco, Consolas, monospace;
+  stroke: none;
+  fill: hsl(0, 0%, 40%);
+}
+
 /* Run Query */
 path.qg-run-query {
   fill: #fff;
@@ -245,7 +254,7 @@ rect.qg-table-border {
   fill: none;
 }
 
-text.qg-table-text {
+.qg-table-text {
   text-anchor: middle;
   font-size: 7px;
   font-weight: bold;

@@ -7,6 +7,8 @@ const symbols = [
     {name: "Run Query", symbol: "run-query-symbol"},
     {name: "Filter", symbol: "filter-symbol"},
     {name: "Sort", symbol: "sort-symbol"},
+    {name: "Assert Single", symbol: "single-symbol"},
+    {name: "Aggregation", symbol: "aggregation-symbol"},
     {name: "Inner Join", symbol: "inner-join-symbol"},
     {name: "Left Join", symbol: "left-join-symbol"},
     {name: "Right Join", symbol: "right-join-symbol"},
@@ -51,6 +53,6 @@ window.addEventListener("DOMContentLoaded", () => {
         svgRoot.append(group);
     });
 
-    svgRoot.setAttribute("viewBox", `0,0,200,${symbols.length * 32}`);
-    svgRoot.setAttribute("width", "200");
+    svgRoot.setAttribute("viewBox", `0,0,300,${symbols.length * 32}`);
+    svgRoot.setAttribute("width", "300");
 });

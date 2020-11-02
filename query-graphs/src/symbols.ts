@@ -126,6 +126,57 @@ export function defineSymbols(baseSvg: SVGElement) {
         .attr("r", radius)
         .attr("cx", rightOffset);
 
+    // The filter symbol
+    defs.append("path")
+        .attr("id", "filter-symbol")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("d", "M-6,-6 L6,-6 L0.8,0 L0.8,5 L-0.8,7 L-0.8,0 Z");
+
+    // Assert Single
+    const assertSingleGroup = defs.append("g").attr("id", "single-symbol");
+    assertSingleGroup
+        .append("circle")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("r", 6);
+    assertSingleGroup
+        .append("text")
+        .attr("class", "qg-symbol-text")
+        .attr("y", 3)
+        .text("1");
+
+    // Aggregation
+    const aggregationGroup = defs.append("g").attr("id", "aggregation-symbol");
+    aggregationGroup
+        .append("circle")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("r", 6);
+    aggregationGroup
+        .append("text")
+        .attr("class", "qg-symbol-text")
+        .attr("y", 3)
+        .text("Σ");
+
+    // The sort symbol
+    const sortGroup = defs.append("g").attr("id", "sort-symbol");
+    sortGroup.append("rect")
+        .attr("class", "qg-symbol-fill-bg qg-symbol-no-stroke")
+        .attr("x", "-8")
+        .attr("y", "-8")
+        .attr("width", "16")
+        .attr("height", "16");
+    sortGroup.append("path")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("d", "M6,3 L6,6 L-7,6 L-7,3 Z");
+    sortGroup.append("path")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("d", "M0,-2 L0,1 L-7,1 L-7,-2 Z");
+    sortGroup.append("path")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("d", "M-3,-7 L-3,-4 L-7,-4 L-7,-7 Z");
+    sortGroup.append("path")
+        .attr("class", "qg-symbol-fill-fg")
+        .attr("d", "M6,-7 L6,-2 L8,-2 L5.7,0.77 L5.3,0.77 L3,-2 L5,-2 L5,-7 Z");
+
     // Build the table symbol. Made out of several rectangles.
     const tableRowWidth = 5.2;
     const tableRowHeight = 2.8;
@@ -164,33 +215,6 @@ export function defineSymbols(baseSvg: SVGElement) {
         .attr("y", tableStartTop + tableRowHeight)
         .attr("height", tableHeight - tableRowHeight);
 
-    // The filter symbol
-    defs.append("path")
-        .attr("id", "filter-symbol")
-        .attr("class", "qg-symbol-fill-fg")
-        .attr("d", "M-6,-6 L6,-6 L0.8,0 L0.8,5 L-0.8,7 L-0.8,0 Z");
-
-    // The sort symbol
-    const sortGroup = defs.append("g").attr("id", "sort-symbol");
-    sortGroup.append("rect")
-        .attr("class", "qg-symbol-fill-bg qg-symbol-no-stroke")
-        .attr("x", "-8")
-        .attr("y", "-8")
-        .attr("width", "16")
-        .attr("height", "16");
-    sortGroup.append("path")
-        .attr("class", "qg-symbol-fill-fg")
-        .attr("d", "M6,3 L6,6 L-7,6 L-7,3 Z");
-    sortGroup.append("path")
-        .attr("class", "qg-symbol-fill-fg")
-        .attr("d", "M0,-2 L0,1 L-7,1 L-7,-2 Z");
-    sortGroup.append("path")
-        .attr("class", "qg-symbol-fill-fg")
-        .attr("d", "M-3,-7 L-3,-4 L-7,-4 L-7,-7 Z");
-    sortGroup.append("path")
-        .attr("class", "qg-symbol-fill-fg")
-        .attr("d", "M6,-7 L6,-2 L8,-2 L5.7,0.77 L5.3,0.77 L3,-2 L5,-2 L5,-7 Z");
-
     // Build the additional table symbol, very similar to the regular table symbol
     function createLabeledTableSymbol(id: string, label: string) {
         const labeledTableGroup = defs.append("g").attr("id", id);
@@ -210,7 +234,7 @@ export function defineSymbols(baseSvg: SVGElement) {
             .attr("height", tableRowHeight);
         labeledTableGroup
             .append("text")
-            .attr("class", "qg-table-text")
+            .attr("class", "qg-symbol-text qg-table-text")
             .attr("y", tableRowHeight + 0.8 /* stroke-width */ / 2)
             .text(label);
     }
