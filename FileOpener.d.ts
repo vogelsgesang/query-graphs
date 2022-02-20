@@ -2,10 +2,11 @@
 import "./FileOpener.css";
 export interface FileOpenerData {
     content: string;
-    fileName: string | null;
+    contentUrl?: string;
+    fileName?: string;
 }
 interface FileOpenerProps {
-    setData: (data: FileOpenerData) => void;
+    setData: (data: FileOpenerData) => Promise<void>;
 }
 export declare function FileOpener({ setData }: FileOpenerProps): JSX.Element;
 export {};
