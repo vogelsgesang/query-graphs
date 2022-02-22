@@ -1,0 +1,24 @@
+{
+  "operator": "executiontarget",
+  "operatorId": 1,
+  "cardinality": 10,
+  "producesRows": true,
+  "output": [{"expression": "iuref", "iu": ["v", ["Integer"]]}],
+  "outputNames": ["generate_series"],
+  "input": {
+    "operator": "tablefunction",
+    "querylocs": [[32, 47]],
+    "operatorId": 2,
+    "cardinality": 10,
+    "input": {
+      "operator": "tableconstruction",
+      "operatorId": 3,
+      "cardinality": 1,
+      "output": [],
+      "values": [[]]
+    },
+    "function": "sequence",
+    "args": [{"expression": "const", "value": {"type": ["Integer"], "value": 1}}, {"expression": "const", "value": {"type": ["Integer"], "value": 10}}, {"expression": "const", "value": {"type": ["Integer"], "value": 1}}],
+    "ius": [["v", ["Integer"]]]
+  }
+}

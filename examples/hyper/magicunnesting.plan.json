@@ -1,0 +1,67 @@
+{
+  "operator": "executiontarget",
+  "operatorId": 1,
+  "cardinality": 2732.06,
+  "producesRows": true,
+  "output": [{"expression": "iuref", "iu": ["v", ["Integer"]]}, {"expression": "iuref", "iu": ["v2", ["BigInt", "nullable"]]}],
+  "outputNames": ["a1", "2"],
+  "input": {
+    "operator": "leftouterjoin",
+    "operatorId": 2,
+    "cardinality": 2732.06,
+    "method": "hash",
+    "left": {
+      "operator": "tablescan",
+      "querylocs": [[73, 75]],
+      "operatorId": 3,
+      "cardinality": 2000,
+      "relationId": 0,
+      "schema": {"type":"sessionschema"},
+      "from": "t1",
+      "values": [{"name": "a1", "type": ["Integer"], "iu": ["v", ["Integer"]]}, {"name": "b1", "type": ["Integer"], "iu": null}, {"name": "c1", "type": ["Integer"], "iu": null}],
+      "selectivity": 1
+    },
+    "right": {
+      "operator": "groupby",
+      "operatorId": 4,
+      "cardinality": 100,
+      "input": {
+        "operator": "join",
+        "operatorId": 5,
+        "cardinality": 100000,
+        "method": "bnl",
+        "left": {
+          "operator": "explicitscan",
+          "operatorId": 6,
+          "cardinality": 100,
+          "output": [{"source": {"expression": "iuref", "iu": ["v3", ["Integer"]]}, "target": ["v4", ["Integer"]]}],
+          "source": {
+            "operator": "groupby",
+            "operatorId": 7,
+            "cardinality": 100,
+            "behavior": "regular",
+            "values": [{"value": {"expression": "iuref", "iu": "v"}}],
+            "aggregates": [{"source": 0, "operation": {"aggregate": "keep"}, "iu": ["v3", ["Integer"]]}]
+          }
+        },
+        "right": {
+          "operator": "tablescan",
+          "querylocs": [[50, 52]],
+          "operatorId": 8,
+          "cardinality": 2000,
+          "relationId": 1,
+          "schema": {"type":"sessionschema"},
+          "from": "t2",
+          "values": [{"name": "a2", "type": ["Integer"], "iu": ["v5", ["Integer"]]}, {"name": "b2", "type": ["Integer"], "iu": null}, {"name": "c2", "type": ["Integer"], "iu": null}],
+          "selectivity": 1
+        },
+        "condition": {"expression": "comparison", "mode": "<", "left": {"expression": "iuref", "iu": "v5"}, "right": {"expression": "iuref", "iu": "v4"}}
+      },
+      "behavior": "regular",
+      "values": [{"value": {"expression": "iuref", "iu": "v5"}}, {"value": {"expression": "iuref", "iu": "v4"}}],
+      "aggregates": [{"source": 1, "operation": {"aggregate": "keep"}, "iu": ["v6", ["Integer"]]}, {"source": 0, "operation": {"aggregate": "sum"}, "iu": ["v2", ["BigInt", "nullable"]]}]
+    },
+    "condition": {"expression": "comparison", "mode": "is", "left": {"expression": "iuref", "iu": "v"}, "right": {"expression": "iuref", "iu": "v6"}},
+    "magic": 7
+  }
+}

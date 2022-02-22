@@ -1,0 +1,16 @@
+{
+  "operator": "executiontarget",
+  "operatorId": 1,
+  "cardinality": 2,
+  "producesRows": true,
+  "output": [{"expression": "iuref", "iu": ["v", ["Varchar"]]}, {"expression": "iuref", "iu": ["v2", ["Varchar"]]}],
+  "outputNames": ["1", "2"],
+  "input": {
+    "operator": "tableconstruction",
+    "querylocs": [[18, 34]],
+    "operatorId": 2,
+    "cardinality": 2,
+    "output": [["v", ["Varchar"]], ["v2", ["Varchar"]]],
+    "values": [[{"expression": "const", "value": {"type": ["Varchar"], "value": "a"}}, {"expression": "const", "value": {"type": ["Varchar"], "value": "b"}}], [{"expression": "const", "value": {"type": ["Varchar"], "value": "c"}}, {"expression": "const", "value": {"type": ["Varchar"], "value": "d"}}]]
+  }
+}
