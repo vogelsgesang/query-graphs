@@ -6,8 +6,7 @@
   "lang": "en-US",
   "display": "minimal-ui",
   "orientation": "any",
-  "scope": "../",
-  "start_url": "/",
+  "start_url": "../",
   "background_color": "#fff",
   "theme_color": "#5581b0",
   "icons": [
@@ -57,5 +56,6 @@
       "type": "image/png"
     }
   ],
-  "$schema": "https://json.schemastore.org/web-manifest.json"
+  "$schema": "https://json.schemastore.org/web-manifest.json",
+  "scope": "../"
 }

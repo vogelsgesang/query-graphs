@@ -14,7 +14,8 @@
   "lang": "en-US",
   "display": "minimal-ui",
   "orientation": "any",
-  "start_url": "/",
+  "scope": "../",
+  "start_url": "../",
   "background_color": "#fff",
   "theme_color": "#5581b0"
 }
