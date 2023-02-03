@@ -15,6 +15,8 @@ export type IconName =
     | "const-table-symbol";
 
 export interface TreeNode {
+    // The id. Must be unique per `TreeDescription`
+    id?: string;
     // The displayed node name
     name?: string;
     // Color applied to node rects
@@ -52,8 +54,8 @@ export interface TreeNode {
 }
 
 export interface Crosslink {
-    source: TreeNode;
-    target: TreeNode;
+    sourceId: string;
+    targetId: string;
 }
 
 export interface TreeDescription {
@@ -90,7 +92,20 @@ export function allChildren<T extends TreeLike<T>>(n: T): T[] {
     return largerArray ?? [];
 }
 
+export function assignIds(root: TreeNode) {
+    let nextId = 0;
+    visitTreeNodes(
+        root,
+        n => {
+            if (n.id === undefined) n.id = `_${nextId}`;
+            ++nextId;
+        },
+        allChildren,
+    );
+}
+
 // Create parent links
+// XXX remove everything from here
 export function createParentLinks(tree: TreeNode) {
     visitTreeNodes(
         tree,

@@ -536,6 +536,7 @@ function addCrosslinks(root: TreeNode): Crosslink[] {
 export function loadTableauPlan(graphString: string, graphCollapse?: unknown): TreeDescription {
     const xml = typesafeXMLParse(graphString);
     const root = prepareTreeData(xml, graphCollapse);
+    treeDescription.assignIds(root);
     const crosslinks = addCrosslinks(root);
     return {root: root, crosslinks: crosslinks};
 }

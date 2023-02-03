@@ -413,6 +413,7 @@ export function loadPostgresPlan(json: Json, graphCollapse: unknown = undefined)
     }
     // Add crosslinks
     const crosslinks = addCrosslinks(root);
+    treeDescription.assignIds(root);
     return {root: root, crosslinks: crosslinks};
 }
 

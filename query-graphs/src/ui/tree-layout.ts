@@ -3,14 +3,14 @@ import * as d3hierarchy from "d3-hierarchy";
 
 import {NodeDimensions} from "./store";
 import * as treeDescription from "../tree-description";
-import {TreeNode, TreeDescription} from "../tree-description";
+import {TreeDescription} from "../tree-description";
 // TODO: import type; fix `prettier` first :/
 import {Edge, Node} from "reactflow";
-import {assertNotNull} from "../loader-utils";
 import {CSSProperties} from "react";
+import {NodeData} from "./QueryNode"; // TODO: `import type`
 
-interface TreeLayout {
-    nodes: Node<TreeNode>[];
+export interface TreeLayout {
+    nodes: Node<NodeData>[];
     edges: Edge[];
 }
 
@@ -25,20 +25,8 @@ export function layoutTree(
     expandedSubtrees: Record<string, boolean>,
     resizeObserver: ResizeObserver,
 ): TreeLayout {
-    console.log("layout");
-    // Assign ids
-    let nextId = 0;
-    const nodeIds = new Map<TreeNode, string>();
-    treeDescription.visitTreeNodes(
-        treeData.root,
-        d => {
-            nodeIds.set(d, "" + nextId++);
-        },
-        treeDescription.allChildren,
-    );
-
     const root = d3hierarchy.hierarchy(treeData.root, d => {
-        if (expandedSubtrees[nodeIds.get(d)!]) return d._children;
+        if (expandedSubtrees[d.id!]) return d._children;
         return d.children;
     });
 
@@ -46,7 +34,7 @@ export function layoutTree(
     const treelayout = d3flextree
         .flextree<treeDescription.TreeNode>()
         .nodeSize(d => {
-            const id = assertNotNull(nodeIds.get(d.data));
+            const id = d.data.id!;
             const dim = nodeDimensions[id];
             if (
                 dim == undefined ||
@@ -67,15 +55,15 @@ export function layoutTree(
     // Transform tree representation from d3 into reactflow
     const nodes = d3nodes.map(n => {
         return {
-            id: nodeIds.get(n.data),
+            id: n.data.id,
             position: {x: n.x, y: n.y},
             type: "querynode",
             data: {...n.data, resizeObserver},
         } as Node;
     });
     const edges = d3edges.map(e => {
-        const sourceId = nodeIds.get(e.source.data);
-        const targetId = nodeIds.get(e.target.data);
+        const sourceId = e.source.data.id;
+        const targetId = e.target.data.id;
         const style = {} as CSSProperties;
         if (e.target.data.edgeWidth) {
             const width = Math.max(1, 10 * Math.min(1, e.target.data.edgeWidth));
@@ -92,19 +80,12 @@ export function layoutTree(
     });
 
     // Add crosslinks
-    const descendants = root.descendants();
-    const map = (d: treeDescription.TreeNode) => {
-        return descendants.find(h => {
-            return h.data === d;
-        });
-    };
+    const visibleNodes = new Set(root.descendants().map(e => e.data.id));
     const crosslinks = [] as Edge[];
     for (const link of treeData.crosslinks ?? []) {
-        const sourceNode = map(link.source);
-        const targetNode = map(link.target);
-        if (!targetNode || !sourceNode) continue;
-        const sourceId = nodeIds.get(sourceNode.data)!;
-        const targetId = nodeIds.get(targetNode.data)!;
+        const sourceId = link.sourceId;
+        const targetId = link.targetId;
+        if (!visibleNodes.has(targetId) || !visibleNodes.has(sourceId)) continue;
         crosslinks.push({
             id: `${sourceId}->${targetId}`,
             source: sourceId,

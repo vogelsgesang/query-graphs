@@ -7,7 +7,9 @@ import "./QueryNode.css";
 import {useGraphRenderingStore} from "./store";
 import {assert} from "../loader-utils";
 
-type NodeData = TreeNode & {resizeObserver: ResizeObserver};
+export type NodeData = TreeNode & {
+    resizeObserver: ResizeObserver;
+};
 
 function useResizeObservedRef<T extends Element>(resizeObserver: ResizeObserver): RefObject<T> {
     const ref = useRef<T>(null);

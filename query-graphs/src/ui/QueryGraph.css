@@ -1,14 +1,21 @@
+/* by default, we don't want to display any node handles */
 .query-graph .react-flow__handle {
   background-color: transparent;
   pointer-events: none;
 }
 
+/* we don't want to display the "drag" mouse cursor */
 .query-graph .react-flow__pane,
 .query-graph .react-flow__edge,
 .query-graph .react-flow__node {
   cursor: default;
 }
 
+/*************************
+ * Styling for edges
+ ************************/
+
+/* Styling for labels */
 .query-graph .react-flow__edge-text-bg {
   opacity: .5;
 }
@@ -17,6 +24,7 @@
   font-size: .6em;
 }
 
+/* Styling for "cross-link" edges */
 .query-graph .react-flow__edge.qg-label-highlighted .react-flow__edge-text-bg {
   opacity: 1;
 }

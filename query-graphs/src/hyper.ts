@@ -18,15 +18,11 @@ import * as treeDescription from "./tree-description";
 import {TreeNode, TreeDescription, Crosslink, IconName} from "./tree-description";
 import {Json, JsonObject, forceToString, tryToString, formatMetric, hasOwnProperty, tryGetPropertyPath} from "./loader-utils";
 
-interface UnresolvedCrosslink {
-    source: TreeNode;
-    targetOpId: string;
-}
-
 // Temporary state which we hold during converting from JSON to internal graph representation
 interface ConversionState {
-    operatorsById: Map<string, TreeNode>;
-    crosslinks: UnresolvedCrosslink[];
+    idPrefix: string;
+    usedOperatorIds: Set<string>;
+    crosslinks: Crosslink[];
     edgeWidths: {node: TreeNode; width: number}[];
     runtimes: {node: TreeNode; time: number}[];
 }
@@ -222,19 +218,20 @@ function convertHyperNode(rawNode: Json, parentKey, conversionState: ConversionS
 
         // Add to `operatorId` map if applicable
         if (nodeType == "operator") {
-            const operatorId = properties?.get("operatorId");
-            if (operatorId !== undefined) {
-                conversionState.operatorsById.set(operatorId, convertedNode);
+            const opId = properties.get("operatorId");
+            if (opId !== undefined && !conversionState.usedOperatorIds.has(opId)) {
+                conversionState.usedOperatorIds.add(opId);
+                convertedNode.id = conversionState.idPrefix + opId;
             }
         }
 
         // Add cross links
         if (renderingConfig.crosslinkSourceKey) {
             const sourceId = properties?.get(renderingConfig.crosslinkSourceKey);
-            if (sourceId !== undefined) {
+            if (convertedNode.id !== undefined && sourceId !== undefined) {
                 conversionState.crosslinks.push({
-                    source: convertedNode,
-                    targetOpId: sourceId,
+                    sourceId: convertedNode.id,
+                    targetId: sourceId,
                 });
             }
         }
@@ -258,18 +255,6 @@ function convertHyperNode(rawNode: Json, parentKey, conversionState: ConversionS
         return listOfObjects;
     }
     throw new Error("Invalid Hyper query plan");
-}
-
-// Resolve all pending crosslinks
-function resolveCrosslinks(state: ConversionState): Crosslink[] {
-    const crosslinks = [] as Crosslink[];
-    for (const link of state.crosslinks) {
-        const target = state.operatorsById.get(link.targetOpId);
-        if (target !== undefined) {
-            crosslinks.push({source: link.source, target: target});
-        }
-    }
-    return crosslinks;
 }
 
 // Sets the edge widths, relative to the number of output tuples
@@ -300,9 +285,10 @@ interface LinkedNodes {
     crosslinks: Crosslink[];
 }
 
-function convertHyperPlan(node: Json): LinkedNodes {
+function convertHyperPlan(node: Json, idPrefix = ""): LinkedNodes {
     const conversionState = {
-        operatorsById: new Map<string, TreeNode>(),
+        idPrefix: idPrefix,
+        usedOperatorIds: new Set<string>(),
         crosslinks: [],
         edgeWidths: [],
         runtimes: [],
@@ -313,9 +299,7 @@ function convertHyperPlan(node: Json): LinkedNodes {
     }
     colorRelativeExecutionTime(conversionState);
     setEdgeWidths(conversionState);
-    const crosslinks = resolveCrosslinks(conversionState);
-    console.log({root, crosslinks});
-    return {root, crosslinks};
+    return {root, crosslinks: conversionState.crosslinks};
 }
 
 function convertOptimizerSteps(node: Json): LinkedNodes | undefined {
@@ -341,7 +325,7 @@ function convertOptimizerSteps(node: Json): LinkedNodes | undefined {
         if (typeof name !== "string") return undefined;
 
         // Add the child
-        const {root: childRoot, crosslinks: newCrosslinks} = convertHyperPlan(plan);
+        const {root: childRoot, crosslinks: newCrosslinks} = convertHyperPlan(plan, `${i}-`);
         crosslinks.push(...newCrosslinks);
         children.push({name: name, children: [childRoot]});
     }
@@ -360,6 +344,7 @@ export function loadHyperPlan(json: Json, graphCollapse?: unknown): TreeDescript
     } else if (graphCollapse === "n") {
         treeDescription.visitTreeNodes(root, treeDescription.expandAllChildren, treeDescription.allChildren);
     }
+    treeDescription.assignIds(root);
     return {root, crosslinks};
 }
 

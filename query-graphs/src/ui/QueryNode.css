@@ -1,11 +1,14 @@
+/* Styles for the node itself and its different states */
+
 .qg-graph-node {
     border: 1px solid transparent;
     border-radius: .8em;
     padding: .3em .5em;
     margin: -.3em -.5em;
-    transition-property: border-color, background-color;
-    transition-duration: 0.2s;
+    opacity: 1;
+    transition: border-color .2s, background-color .2s;
 }
+
 .qg-graph-node.qg-no-props {
     cursor: default;
 }
@@ -16,6 +19,7 @@
     border-color: hsl(0,0%, 80%);
 }
 
+/* There is a small handle to collapse/expand the subtree  */
 .query-graph .react-flow__handle.qg-subtree-handle {
     font-size: .7em;
     width: 1em;
@@ -27,8 +31,7 @@
     background: hsl(0,0%,85%);
     cursor: pointer;
     pointer-events: all;
-    transition-property: background-color;
-    transition-duration: 0.2s;
+    transition: background-color 0.2s;
 }
 
 .query-graph .react-flow__handle.qg-subtree-handle.qg-collapsed {
@@ -41,6 +44,8 @@
 .query-graph .react-flow__handle.qg-subtree-handle:hover {
     background: hsl(0,0%,70%);
 }
+
+/* The "headline" inside the node  */
 
 .qg-graph-node-head {
     /* We don't want the node to automatically stretch/shrink with its container
@@ -66,12 +71,14 @@
     padding: 0 .15em;
 }
 
+/* The node's body  */
+
 .qg-graph-node-body-wrapper {
     max-width: 0;
     max-height: 0;
     overflow: hidden;
     transition-property: max-width, max-height;
-    transition-duration: .5s;
+    transition-duration: 3s;
 }
 .qg-graph-node.qg-expanded .qg-graph-node-body-wrapper {
     max-width: 30em;
