@@ -3,18 +3,21 @@ import {useCallback, useEffect, useState} from "react";
 
 import {EditorView, drawSelection, highlightActiveLine, highlightSpecialChars, lineNumbers} from "@codemirror/view";
 import {ChangeSpec, EditorState} from "@codemirror/state";
-//import {bracketMatching} from "@codemirror/matchbrackets";
+import {bracketMatching, defaultHighlightStyle, foldGutter, syntaxHighlighting} from "@codemirror/language";
+import {json} from "@codemirror/lang-json";
 
 import {CodeMirror} from "./CodeMirror";
 
 const extensions = [
     EditorState.readOnly.of(true),
-    EditorView.lineWrapping,
-    lineNumbers(),
     drawSelection(),
     highlightActiveLine(),
     highlightSpecialChars(),
-    //bracketMatching({}),
+    lineNumbers(),
+    foldGutter(),
+    syntaxHighlighting(defaultHighlightStyle),
+    bracketMatching({}),
+    json(),
 ];
 
 interface HighlightedViewProps {
