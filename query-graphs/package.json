@@ -37,7 +37,9 @@
   },
   "style": "style/query-graphs.css",
   "dependencies": {
-    "@codemirror/matchbrackets": "^0.19.4",
+    "@codemirror/lang-json": "^6.0.1",
+    "@codemirror/language": "^6.10.1",
+    "@codemirror/lint": "^6.5.0",
     "@codemirror/state": "^6.4.1",
     "@codemirror/view": "^6.26.3",
     "classcat": "^5.0.4",
@@ -58,7 +60,7 @@
   },
   "scripts": {
     "clean": "rimraf dist/",
-    "copy-files": "copyfiles -u 1 src/**/*.css lib/",
+    "copy-files": "copyfiles -u 1 'src/**/*.css' lib/",
     "build": "yarn clean && tsc --build && yarn copy-files"
   },
   "sideEffects": [
