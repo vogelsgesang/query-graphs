@@ -1,0 +1,11 @@
+.qg-float-overlay {
+    border: 1px solid #999;
+    border-radius: 5px;
+}
+
+.qg-float-titlebar {
+    border-bottom: 1px solid #999;
+}
+
+.qg-float-content {
+}
