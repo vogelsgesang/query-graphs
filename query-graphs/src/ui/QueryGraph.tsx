@@ -7,6 +7,7 @@ import {useMemo, useEffect, useRef} from "react";
 import {QueryNode} from "./QueryNode";
 import "./QueryGraph.css";
 import {useGraphRenderingStore} from "./store";
+import { FloatingOverlay } from "./FloatingOverlay";
 
 interface QueryGraphProps {
     treeDescription: TreeDescription;
@@ -92,6 +93,9 @@ function QueryGraphInternal({treeDescription}: QueryGraphProps) {
             nodesFocusable={false}
             className={"query-graph"}
         >
+            <FloatingOverlay title="JSON Plan">
+                Test!
+            </FloatingOverlay>
             <MiniMap zoomable={true} pannable={true} nodeColor={minimapNodeColor} />
             <Controls showInteractive={false} />
         </ReactFlow>
