@@ -3,6 +3,7 @@
 import * as React from "react";
 import {EditorState, EditorStateConfig, Extension} from "@codemirror/state";
 import {EditorView} from "@codemirror/view";
+import "./CodeMirror.css";
 
 export interface CodeMirrorProps
     extends Omit<EditorStateConfig, "doc" | "extensions">,
@@ -64,7 +65,6 @@ export const CodeMirror: React.FC<CodeMirrorProps> = (props: CodeMirrorProps) =>
             console.warn("target node was unmounted", "codemirror");
             return;
         }
-        console.info("creating a new codemirror view", "codemirror");
 
         // The DOM node has changed, create a new view
         mount.current.view = new EditorView({
@@ -77,5 +77,5 @@ export const CodeMirror: React.FC<CodeMirrorProps> = (props: CodeMirrorProps) =>
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-    return <div style={{width: "100%", height: "100%"}} ref={onRefChange}></div>;
+    return <div style={{width: "100%", height: "100%", display: "flex"}} ref={onRefChange}></div>;
 };

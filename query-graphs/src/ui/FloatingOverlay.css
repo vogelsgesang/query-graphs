@@ -8,6 +8,7 @@
 .qg-float-titlebar {
     border-bottom: 1px solid #999;
     padding: .1em .3em;
+    user-select: none;
 }
 
 .qg-float-content {

@@ -135,7 +135,7 @@ export function QueryGraphsApp() {
                 <TreeLabel title={treeTitle ?? ""} setTitle={setTreeTitle} metadata={tree.metadata} />
                 {text && (
                     <FloatingOverlay title="JSON Plan">
-                        <HighlightedView text={text} />
+                        <HighlightedView value={text} />
                     </FloatingOverlay>
                 )}
             </QueryGraph>
