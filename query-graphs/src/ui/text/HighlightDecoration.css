@@ -1,0 +1,19 @@
+.qg-cm-reference {
+    outline: 2px dashed rgba(44, 129, 239, 1);
+}
+
+.qg-cm-reference.qg-cm-active-primary {
+    background: rgb(244, 175, 0);
+
+}
+
+.qg-cm-reference.qg-cm-active-secondary {
+    background: rgb(255, 255, 202);
+}
+
+.qg-cm-reference:hover,
+.qg-cm-reference.qg-cm-active-primary:hover,
+.qg-cm-reference.qg-cm-active-secondary:hover {
+    background: rgb(255, 237, 38);
+
+}
