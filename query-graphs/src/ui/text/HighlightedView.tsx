@@ -7,6 +7,7 @@ import {bracketMatching, defaultHighlightStyle, foldGutter, syntaxHighlighting} 
 import {json} from "@codemirror/lang-json";
 
 import {CodeMirror} from "./CodeMirror";
+import {referenceDecorations} from "./HighlightDecoration";
 
 const extensions = [
     EditorState.readOnly.of(true),
@@ -18,6 +19,7 @@ const extensions = [
     syntaxHighlighting(defaultHighlightStyle),
     bracketMatching({}),
     json(),
+    referenceDecorations,
 ];
 
 interface HighlightedViewProps {
