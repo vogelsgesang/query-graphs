@@ -143,7 +143,7 @@ export function QueryGraphsApp() {
             <QueryGraph treeDescription={annotatedTree}>
                 {text && (
                     <FloatingOverlay title="JSON Plan">
-                        <HighlightedView text={text} />
+                        <HighlightedView value={text} />
                     </FloatingOverlay>
                 )}
             </QueryGraph>
