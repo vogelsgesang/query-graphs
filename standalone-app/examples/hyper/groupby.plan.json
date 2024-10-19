@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nSELECT a1, SUM(b1), AVG(c1)\nFROM t1\nGROUP BY a1",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 100,

@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nSELECT a1,\n    SUM(b1) OVER (ORDER BY a1),\n    AVG(c1) OVER (ORDER BY b1 ROWS BETWEEN 1 PRECEDING AND 3 FOLLOWING)\nFROM t1\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 2000,

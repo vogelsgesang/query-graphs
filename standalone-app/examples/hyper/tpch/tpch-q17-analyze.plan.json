@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON, ANALYZE)\n-- This query is derived from TPC-H query 1\n-- THE TPC SOFTWARE IS AVAILABLE WITHOUT CHARGE FROM TPC.\n\nselect\n        sum(l_extendedprice) / 7.0 as avg_yearly\nfrom\n        lineitem,\n        part\nwhere\n        p_partkey = l_partkey\n        and p_brand = 'Brand#23'\n        and p_container = 'MED BOX'\n        and l_quantity < (\n                select\n                        0.2 * avg(l_quantity)\n                from\n                        lineitem\n                where\n                        l_partkey = p_partkey\n        )\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 1,

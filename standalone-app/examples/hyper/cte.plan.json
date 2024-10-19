@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nWITH cte AS (SELECT a1, SUM(b1), AVG(c1)\n   FROM t1\n   GROUP BY a1\n)\nSELECT * FROM cte UNION ALL SELECT * FROM cte\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 200,

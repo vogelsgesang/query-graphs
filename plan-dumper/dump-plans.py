@@ -82,15 +82,18 @@ with HyperProcess(telemetry=Telemetry.SEND_USAGE_DATA_TO_TABLEAU, parameters=hyp
 
         def get_hyper_plan(sql, mode):
             if mode == "steps":
-                explain = "EXPLAIN (FORMAT JSON, OPTIMIZERSTEPS) "
+                explain = "EXPLAIN (FORMAT JSON, OPTIMIZERSTEPS)\n"
             elif mode == "analyze":
-                explain = "EXPLAIN (FORMAT JSON, ANALYZE) "
+                explain = "EXPLAIN (FORMAT JSON, ANALYZE)\n"
             elif mode is None:
-                explain = "EXPLAIN (FORMAT JSON) "
+                explain = "EXPLAIN (FORMAT JSON)\n"
             else:
                 return None
-            planRes = connection.execute_list_query(explain + sql)
-            plan = "\n".join(r[0] for r in planRes)
-            return plan
+            effective_sql = explain + sql
+            plan_str = connection.execute_scalar_query(effective_sql)
+            line_break_pos = plan_str.find("\n")
+            sql_escaped = json.dumps(effective_sql)
+            plan_str = plan_str[:line_break_pos] + f"\n  \"sql\": {sql_escaped}," + plan_str[line_break_pos:]
+            return plan_str
 
         dump_plans("hyper", exec_hyper, get_hyper_plan)

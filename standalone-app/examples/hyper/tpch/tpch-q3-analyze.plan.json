@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON, ANALYZE)\n-- This query is derived from TPC-H query 1\n-- THE TPC SOFTWARE IS AVAILABLE WITHOUT CHARGE FROM TPC.\n\nselect\n        l_orderkey,\n        sum(l_extendedprice * (1 - l_discount)) as revenue,\n        o_orderdate,\n        o_shippriority\nfrom\n        customer,\n        orders,\n        lineitem\nwhere\n        c_mktsegment = 'BUILDING'\n        and c_custkey = o_custkey\n        and l_orderkey = o_orderkey\n        and o_orderdate < date '1995-03-15'\n        and l_shipdate > date '1995-03-15'\ngroup by\n        l_orderkey,\n        o_orderdate,\n        o_shippriority\norder by\n        revenue desc,\n        o_orderdate\nlimit\n\t10\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 10,

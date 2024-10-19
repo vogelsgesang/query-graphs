@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nSELECT a2, b2 FROM t2\nUNION ALL\nSELECT a2, c2 FROM t2\nUNION ALL\n(\n   SELECT b1, c1 FROM t1\n   WHERE a1 < 0\n   INTERSECT ALL\n   SELECT b1, c1 FROM t1\n   WHERE a1 > 0\n   EXCEPT ALL\n   SELECT b1, c1 FROM t1\n   WHERE a1 > 0\n)\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 4008.5,
