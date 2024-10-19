@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nSELECT r_name FROM region;\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 5,
@@ -8,7 +9,7 @@
   "input": {
     "operator": "tablescan",
     "operatorId": 2,
-    "sqlpos": [[37, 43]],
+    "sqlpos": [[41, 47]],
     "cardinality": 5,
     "relationId": 9,
     "schema": {"type":"sessionschema"},

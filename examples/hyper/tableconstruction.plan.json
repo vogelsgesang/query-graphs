@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nVALUES('a', 'b'),('c', 'd')",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 2,
@@ -8,7 +9,7 @@
   "input": {
     "operator": "tableconstruction",
     "operatorId": 2,
-    "sqlpos": [[18, 34]],
+    "sqlpos": [[22, 38]],
     "cardinality": 2,
     "output": [["v", ["Varchar"]], ["v2", ["Varchar"]]],
     "values": [[{"expression": "const", "value": {"type": ["Varchar"], "value": "a"}}, {"expression": "const", "value": {"type": ["Varchar"], "value": "b"}}], [{"expression": "const", "value": {"type": ["Varchar"], "value": "c"}}, {"expression": "const", "value": {"type": ["Varchar"], "value": "d"}}]]
