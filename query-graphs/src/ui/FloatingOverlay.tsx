@@ -2,9 +2,6 @@ import type {HTMLAttributes, ReactNode} from "react";
 import "./FloatingOverlay.css";
 
 type FloatingOverlayProps = HTMLAttributes<HTMLDivElement> & {
-    /** Set position of the panel
-     * @example 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
-     */
     title: string;
     children?: ReactNode;
 };

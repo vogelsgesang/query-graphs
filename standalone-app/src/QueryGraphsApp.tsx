@@ -1,19 +1,18 @@
-import {useCallback, useEffect, useState} from "react";
-import {useBrowserUrl, useUrlParam} from "./browserUrlHooks";
-import {FileOpener, FileOpenerData, useLoadStateController} from "./FileOpener";
-import {QueryGraph} from "@tableau/query-graphs/lib/ui/QueryGraph";
-import {HighlightedView} from "@tableau/query-graphs/lib/ui/text/HighlightedView";
-import {FloatingOverlay} from "@tableau/query-graphs/lib/ui/FloatingOverlay";
-import {TreeDescription} from "@tableau/query-graphs/lib/tree-description";
-import {loadPlan} from "./tree-loader";
-import {tryCreateLocalStorageUrl, isLocalStorageURL, loadLocalStorageURL} from "./LocalStorageUrl";
-import {assert} from "./assert";
-import {TreeLabel} from "./TreeLabel";
+import { useCallback, useEffect, useState } from "react";
+import { useBrowserUrl, useUrlParam } from "./browserUrlHooks";
+import { FileOpener, FileOpenerData, useLoadStateController } from "./FileOpener";
+import { QueryGraph } from "@tableau/query-graphs/lib/ui/QueryGraph";
+import { HighlightedView } from "@tableau/query-graphs/lib/ui/text/HighlightedView";
+import { FloatingOverlay } from "@tableau/query-graphs/lib/ui/FloatingOverlay";
+import { TreeDescription } from "@tableau/query-graphs/lib/tree-description";
+import { loadPlan } from "./tree-loader";
+import { tryCreateLocalStorageUrl, isLocalStorageURL, loadLocalStorageURL } from "./LocalStorageUrl";
+import { assert } from "./assert";
+import { TreeLabel } from "./TreeLabel";
 
 export function QueryGraphsApp() {
     const loadStateController = useLoadStateController();
-    const {setProgress, clearLoadState, tryAndDisplayErrors} = loadStateController;
-    const [text, setText] = useState<string | undefined>(undefined);
+    const { setProgress, clearLoadState, tryAndDisplayErrors } = loadStateController;
     const [tree, setTree] = useState<TreeDescription | undefined>(undefined);
     const browserUrl = useBrowserUrl();
     // We store the currently opened tree in a URL parameter.
@@ -67,7 +66,6 @@ export function QueryGraphsApp() {
     // We keep the displayed tree in sync with the URL parameter
     useEffect(() => {
         if (!treeUrl) {
-            setText(undefined);
             setTree(undefined);
             return;
         }
@@ -89,7 +87,7 @@ export function QueryGraphsApp() {
                 setProgress(`Fetching "${urlString}"...`);
                 let response;
                 try {
-                    response = await fetch(urlString, {signal});
+                    response = await fetch(urlString, { signal });
                 } catch (e) {
                     if (url.protocol == "blob:") {
                         throw new Error("Local content no longer accessible");
@@ -103,7 +101,6 @@ export function QueryGraphsApp() {
             }
             // Parse the tree
             setProgress("Parsing plan...");
-            setText(text);
             const tree = loadPlan(text);
             // Display the freshly loaded tree=
             setTree(tree);
@@ -133,11 +130,11 @@ export function QueryGraphsApp() {
         return (
             <QueryGraph treeDescription={tree}>
                 <TreeLabel title={treeTitle ?? ""} setTitle={setTreeTitle} metadata={tree.metadata} />
-                {text && (
-                    <FloatingOverlay title="JSON Plan">
-                        <HighlightedView value={text} />
+                {(tree.textDocs ?? []).map((doc) => {
+                    return <FloatingOverlay title={doc.title}>
+                        <HighlightedView value={doc.content} language={doc.language} />
                     </FloatingOverlay>
-                )}
+                })}
             </QueryGraph>
         );
     }

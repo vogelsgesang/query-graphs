@@ -12,6 +12,26 @@ export type IconName =
     | "virtual-table-symbol"
     | "const-table-symbol";
 
+export interface TextDoc {
+    /// The document id
+    id: string;
+    /// The title
+    title: string;
+    /// The title
+    content: string;
+    /// The language
+    language: string;
+}
+
+export interface TextDocRef {
+    /// Id of the document
+    docId: string;
+    /// Start offset
+    startOffset: number;
+    /// End offset
+    endOffset: number;
+}
+
 export interface TreeNode {
     // The displayed node name
     name?: string;
@@ -37,6 +57,9 @@ export interface TreeNode {
     collapsedChildren?: TreeNode[];
     // Whether collapsed children are shown by default
     expandedByDefault?: boolean;
+
+    /// References into text documents (if any)
+    textRefs?: TextDocRef[];
 }
 
 export interface Crosslink {
@@ -51,6 +74,8 @@ export interface TreeDescription {
     metadata?: Map<string, string>;
     /// Additional links between indirectly related nodes
     crosslinks?: Crosslink[];
+    /// Related text documents
+    textDocs?: TextDoc[];
 }
 
 // A recursive helper function for walking through all nodes

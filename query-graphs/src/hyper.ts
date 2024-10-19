@@ -22,7 +22,7 @@ The main steps are:
 
 */
 
-import {TreeNode, TreeDescription, Crosslink, IconName} from "./tree-description";
+import {TreeNode, TreeDescription, Crosslink, IconName, TextDoc} from "./tree-description";
 import {Json, JsonObject, forceToString, tryToString, formatMetric, hasOwnProperty, tryGetPropertyPath} from "./loader-utils";
 
 interface UnresolvedCrosslink {
@@ -221,7 +221,17 @@ function convertHyperNode(rawNode: Json, parentKey, conversionState: ConversionS
             children: expandedChildren,
             collapsedChildren,
             expandedByDefault: nodeType != "operator" && expandedChildren.length == 0,
+            textRefs: [],
         } as TreeNode;
+
+        // Add text references
+        if (rawNode.hasOwnProperty("sqlpos") && rawNode["sqlpos"] instanceof Array) {
+            for (const pos of rawNode["sqlpos"]) {
+                if (pos instanceof Array && pos.length == 2 && typeof pos[0] === "number" && typeof pos[1] === "number") {
+                    convertedNode.textRefs!.push({docId: "sql", startOffset: pos[0], endOffset: pos[1]});
+                }
+            }
+        }
 
         // Highlight the node which errored out, in case the query failed
         const errored = conversionState.metadata.has("Error") && tryGetPropertyPath(rawNode, ["analyze", "running"]) === true;
@@ -387,7 +397,23 @@ function convertOptimizerSteps(node: Json): TreeDescription | undefined {
 
 // Loads a Hyper query plan
 export function loadHyperPlan(json: Json): TreeDescription {
-    return convertOptimizerSteps(json) ?? convertHyperPlan(json);
+    if (!(json instanceof Object) || Array.isArray(json)) {
+        throw new Error("Invalid Hyper query plan: Expected a top-level object");
+    }
+    // Load the graph
+    const tree = convertOptimizerSteps(json) ?? convertHyperPlan(json);
+    // Add the SQL text
+    const textDocs = [] as TextDoc[];
+    const sql = json["sql"];
+    if (typeof sql === "string") {
+        textDocs.push({
+            id: "sql",
+            title: "SQL query",
+            content: sql,
+            language: "sql",
+        } as TextDoc);
+    }
+    return {...tree, textDocs};
 }
 
 function tryStripPrefix(str, pre) {
