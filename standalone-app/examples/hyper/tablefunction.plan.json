@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nselect * from generate_series(1,10)",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 10,

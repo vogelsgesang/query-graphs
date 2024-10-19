@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nINSERT INTO t2\nSELECT a1*v, b1*v, c1*v\nFROM t1,\n(VALUES(1), (2)) v(v)",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 4000,

@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nVALUES('a', 'b'),('c', 'd')",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 2,

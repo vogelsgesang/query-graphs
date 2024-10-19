@@ -1,4 +1,5 @@
 {
+  "sql": "EXPLAIN (FORMAT JSON)\nSELECT r_name FROM region;\n",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 5,
