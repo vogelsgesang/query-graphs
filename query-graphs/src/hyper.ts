@@ -22,7 +22,7 @@ The main steps are:
 
 */
 
-import {TreeNode, TreeDescription, Crosslink, IconName} from "./tree-description";
+import {TreeNode, TreeDescription, Crosslink, IconName, TextDoc} from "./tree-description";
 import {Json, JsonObject, forceToString, tryToString, formatMetric, hasOwnProperty, tryGetPropertyPath} from "./loader-utils";
 
 interface UnresolvedCrosslink {
@@ -387,7 +387,23 @@ function convertOptimizerSteps(node: Json): TreeDescription | undefined {
 
 // Loads a Hyper query plan
 export function loadHyperPlan(json: Json): TreeDescription {
-    return convertOptimizerSteps(json) ?? convertHyperPlan(json);
+    if (!(json instanceof Object) || Array.isArray(json)) {
+        throw new Error("Invalid Hyper query plan: Expected a top-level object");
+    }
+    // Load the graph
+    const tree = convertOptimizerSteps(json) ?? convertHyperPlan(json);
+    // Add the SQL text
+    var textDocs = [] as TextDoc[];
+    const sql = json["sql"];
+    if (typeof sql === "string") {
+        textDocs.push({
+            "id": "sql",
+            "title": "SQL query",
+            "content": sql,
+            "language": "sql"
+        } as TextDoc)
+    }
+    return {...tree, textDocs};
 }
 
 function tryStripPrefix(str, pre) {
