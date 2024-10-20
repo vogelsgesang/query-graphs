@@ -1,4 +1,4 @@
-import ReactFlow, {MiniMap, Node, Controls, ReactFlowProvider} from "reactflow";
+import ReactFlow, {MiniMap, Node, Controls, ReactFlowProvider} from "@xyflow/react";
 import "reactflow/dist/base.css";
 
 import {layoutTree} from "./tree-layout";

@@ -1,5 +1,5 @@
 import {memo, ReactElement, MouseEvent, useCallback, useRef, useEffect, RefObject} from "react";
-import {Handle, NodeProps, Position} from "reactflow";
+import {Handle, NodeProps, Position} from "@xyflow/react";
 import cc from "classcat";
 import {TreeNode} from "../tree-description";
 import {NodeIcon} from "./NodeIcon";
