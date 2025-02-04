@@ -1,5 +1,4 @@
 {
-  "sql": "EXPLAIN (FORMAT JSON)\nSELECT *, EXISTS (SELECT * FROM t2 WHERE a1 = a2 AND b1 < b2) FROM t1",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 2000,

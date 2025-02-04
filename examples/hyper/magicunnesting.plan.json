@@ -1,5 +1,4 @@
 {
-  "sql": "EXPLAIN (FORMAT JSON)\nSELECT a1, (SELECT SUM(a2) FROM t2 WHERE a2 < a1) FROM t1",
   "operator": "executiontarget",
   "operatorId": 1,
   "cardinality": 2732.06,
